@@ -1,0 +1,22 @@
+server:
+  error:
+    include-stacktrace: never
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    username: ""
+    password: ""
+  jpa:
+    show-sql: false
+  jooq:
+    sql-dialect: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    ROOT: INFO
