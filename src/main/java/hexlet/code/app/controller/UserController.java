@@ -38,6 +38,7 @@ public class UserController {
 
     @PostMapping("")
     public UserDtoOutput createUser(@Valid @RequestBody UserDtoInput userDtoInput) {
+        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
 //        encodeUserPassword(userDtoInput);
         return userService.createUser(userDtoInput);
     }
@@ -47,6 +48,7 @@ public class UserController {
             @Valid @RequestBody UserDtoInput userDtoInput,
             @PathVariable Long id
     ) {
+        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
 //        encodeUserPassword(userDtoInput);
         return userService.updateUser(userDtoInput, id);
     }
