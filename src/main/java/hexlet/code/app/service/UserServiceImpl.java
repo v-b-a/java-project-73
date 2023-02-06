@@ -4,13 +4,21 @@ import hexlet.code.app.dao.UserRepository;
 import hexlet.code.app.dto.UserDtoOutput;
 import hexlet.code.app.dto.UserDtoInput;
 import hexlet.code.app.model.User;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@AllArgsConstructor
+@Service
+@Transactional
 public class UserServiceImpl implements UserService {
-    @Autowired
     UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDtoOutput getUserById(Long userId) {
@@ -61,7 +69,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDtoInput.getFirstName());
         user.setLastName(userDtoInput.getLastName());
         user.setEmail(userDtoInput.getEmail());
-        user.setPassword(userDtoInput.getPassword());
+        user.setPassword(passwordEncoder.encode(userDtoInput.getPassword()));
         return user;
     }
 }

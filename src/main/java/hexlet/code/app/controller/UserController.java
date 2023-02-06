@@ -20,11 +20,9 @@ import static hexlet.code.app.controller.UserController.USER_CONTROLLER_PATH;
 @RestController
 @RequestMapping("${base-url}" + USER_CONTROLLER_PATH)
 public class UserController {
-    protected static final String USER_CONTROLLER_PATH = "/users";
+    public static final String USER_CONTROLLER_PATH = "/users";
     @Autowired
     private UserService userService;
-//    @Autowired
-//    private PasswordEncoder encoder;
 
     @GetMapping("/{id}")
     public UserDtoOutput getUserById(@PathVariable(name = "id") Long id) {
@@ -38,8 +36,7 @@ public class UserController {
 
     @PostMapping("")
     public UserDtoOutput createUser(@Valid @RequestBody UserDtoInput userDtoInput) {
-        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
-//        encodeUserPassword(userDtoInput);
+//        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
         return userService.createUser(userDtoInput);
     }
 
@@ -48,7 +45,7 @@ public class UserController {
             @Valid @RequestBody UserDtoInput userDtoInput,
             @PathVariable Long id
     ) {
-        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
+//        userDtoInput.setPassword(String.valueOf(userDtoInput.getPassword().hashCode()));
 //        encodeUserPassword(userDtoInput);
         return userService.updateUser(userDtoInput, id);
     }
