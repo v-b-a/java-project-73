@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'com.github.ben-manes.versions' version '0.38.0'
+    id 'org.siouan.frontend-jdk11' version '6.0.0'
 //    id 'jacoco'
 }
 
@@ -51,7 +52,7 @@ dependencies {
     )
 
 //	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    runtimeOnly(
+    runtimeOnly (
             'com.h2database:h2:1.4.200',
             'org.postgresql:postgresql:42.2.27'
     )
@@ -80,15 +81,6 @@ diffChangeLog {
     dependsOn compileJava
 }
 
-//jacocoTestReport {
-//	reports {
-//		xml.required = true
-//	}
-//}
-//
-//jacocoTestReport {
-//	dependsOn test
-//}
 
 liquibase {
     activities {
@@ -111,3 +103,36 @@ liquibase {
         }
     }
 }
+
+// Сборка фронтенда.
+// Выполняется только если ничего не изменилось.
+// *****************************************************************************
+frontend {
+    nodeVersion = '16.13.1'
+    installScript = 'install'
+    assembleScript = 'run build'
+    packageJsonDirectory = file("${projectDir}/frontend")
+}
+
+def configFrontendTasks = {
+    inputs.files(fileTree("$projectDir/frontend").exclude('build', 'node_modules'))
+    outputs.dir("$buildDir/resources/main/static")
+}
+
+assembleFrontend {
+    configure configFrontendTasks
+
+    doLast {
+        copy {
+            from "$projectDir/frontend/build"
+            into "$buildDir/resources/main/static"
+        }
+    }
+}
+
+installFrontend {
+    configure configFrontendTasks
+}
+
+processResources.dependsOn assembleFrontend
+// *****************************************************************************
