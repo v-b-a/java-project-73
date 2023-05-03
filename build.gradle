@@ -2,6 +2,7 @@ plugins {
 	id 'application'
 	id 'checkstyle'
 	id 'java'
+	id 'jacoco'
 	id 'org.springframework.boot' version '2.5.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
@@ -50,6 +51,14 @@ wrapper {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+	}
+
+	dependsOn test
 }
 
 task stage(dependsOn: [clean, installDist])
