@@ -38,6 +38,7 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-web',
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.springframework.boot:spring-boot-starter-validation',
+			'org.springframework.boot:spring-boot-starter-security',
 
 			/* Data */
 			'org.liquibase:liquibase-core:4.8.0',
