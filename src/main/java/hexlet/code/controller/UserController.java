@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
 import java.util.List;
+import static hexlet.code.controller.UserController.USERS_PATH;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("${base-url}" + USERS_PATH)
 @AllArgsConstructor
 public class UserController {
+    public static final String USERS_PATH = "/users";
     private final UserService userService;
 
     @GetMapping("/{id}")

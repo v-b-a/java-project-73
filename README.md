@@ -3,4 +3,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a9509517ff0d61ca14ef/maintainability)](https://codeclimate.com/github/v-b-a/java-project-73/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a9509517ff0d61ca14ef/test_coverage)](https://codeclimate.com/github/v-b-a/java-project-73/test_coverage)
 
-// ссылка на задеплоенное приложение
+Deployed project
+In Render: https://java-project-73.onrender.com
+In Railway: https://web-production-0229.up.railway.app/

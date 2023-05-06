@@ -4,19 +4,17 @@ import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.dto.UserDtoRq;
 import hexlet.code.repository.dto.UserDtoRs;
-import org.springframework.stereotype.Service;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public UserDtoRs getUserById(Long id) {
         return toUserDto(userRepository.getById(id));

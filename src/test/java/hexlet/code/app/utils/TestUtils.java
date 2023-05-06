@@ -1,25 +1,20 @@
 package hexlet.code.app.utils;
 
-import hexlet.code.repository.dto.UserDtoRq;
-import hexlet.code.repository.dto.UserDtoRs;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.model.User;
+import hexlet.code.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.web.servlet.MockMvc;
+
 
 @Component
 public class TestUtils {
 
-    public static final String TEST_USERNAME = "email@email.com";
-    public static final String TEST_USERNAME_2 = "email2@email.com";
-
-    private final UserDtoRs testRegistrationDto = new UserDtoRs(
-            TEST_USERNAME,
-            "fname",
-            "lname",
-            "pwd123"
-    );
-
-    public UserDto getTestRegistrationDto() {
-        return testRegistrationDto;
-    }
+    public static final String TEST_EMAIL = "email@email.com";
+    public static final String TEST_EMAIL_2 = "email2@email.com";
 
     @Autowired
     private MockMvc mockMvc;
@@ -27,47 +22,30 @@ public class TestUtils {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PostCommentRepository postCommentRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private JWTHelper jwtHelper;
-
     public void tearDown() {
-        postCommentRepository.deleteAll();
-        postRepository.deleteAll();
         userRepository.deleteAll();
     }
 
-    public User getUserByEmail(final String email) {
-        return userRepository.findByEmail(email).get();
+//    public User getUserByEmail(final String email) {
+//        return userRepository.findByEmail(email).get();
+//    }
+
+    public void regDefaultUsers() {
+        userRepository.save(User.builder()
+                .email(TEST_EMAIL)
+                .firstName("fname")
+                .lastName("lname")
+                .password("pwd123")
+                .build());
+
+        userRepository.save(User.builder()
+                .email(TEST_EMAIL_2)
+                .firstName("fname2")
+                .lastName("lname2")
+                .password("pwd1234")
+                .build());
     }
 
-    public ResultActions regDefaultUser() throws Exception {
-        return regUser(testRegistrationDto);
-    }
-
-    public ResultActions regUser(final UserDto dto) throws Exception {
-        final var request = post(USER_CONTROLLER_PATH)
-                .content(asJson(dto))
-                .contentType(APPLICATION_JSON);
-
-        return perform(request);
-    }
-
-    public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
-        final String token = jwtHelper.expiring(Map.of("username", byUser));
-        request.header(AUTHORIZATION, token);
-
-        return perform(request);
-    }
-
-    public ResultActions perform(final MockHttpServletRequestBuilder request) throws Exception {
-        return mockMvc.perform(request);
-    }
 
     private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 

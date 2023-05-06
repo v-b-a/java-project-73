@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @Profile(SpringConfigs.TEST_PROFILE)
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages = "io.hexlet.javaspringblog")
+@ComponentScan(basePackages = "hexlet.code")
 @PropertySource(value = "classpath:/config/application.yml")
 public class SpringConfigs {
 

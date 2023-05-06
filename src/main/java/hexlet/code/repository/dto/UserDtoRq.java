@@ -6,19 +6,18 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Data
 @Builder
 public class UserDtoRq {
-    @NotBlank
-    @Email
+    @NotBlank(message = "email is required")
+    @Email(message = "Invalid email format")
     private String email;
-    @NotBlank
+    @NotBlank(message = "firstName is required")
     private String firstName;
-    @NotBlank
+    @NotBlank(message = "lastName is required")
     private String lastName;
-    @NotBlank
-    @Size(min = 5, max = 10)
+    @NotBlank(message = "password is required")
+    @Size(min = 5, max = 10, message = "Password length should be between 5 and 10")
     private String password;
 }
