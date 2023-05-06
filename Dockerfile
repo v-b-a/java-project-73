@@ -1,10 +1,9 @@
 FROM gradle:7.4.2-jdk17
 
-RUN apt-get update && apt-get install -yq make
+WORKDIR /app
 
-WORKDIR /project
-RUN mkdir /project/code
+COPY ./ .
 
-ENV GRADLE_USER_HOME /project/.gradle
+RUN gradle installDist
 
-COPY . .
+CMD build/install/app/bin/app
