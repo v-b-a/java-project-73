@@ -5,14 +5,19 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.dto.UserDtoRq;
 import hexlet.code.repository.dto.UserDtoRs;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static hexlet.code.config.SecurityConfig.DEFAULT_AUTHORITIES;
+
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -61,5 +66,20 @@ public class UserService {
                 .lastName(user.getLastName())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .map(this::buildSpringUser)
+                .orElseThrow(() -> new UsernameNotFoundException("Not found user with 'username': " + username));
+    }
+
+    private UserDetails buildSpringUser(final User user) {
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                DEFAULT_AUTHORITIES
+        );
     }
 }
