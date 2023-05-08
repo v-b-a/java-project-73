@@ -3,11 +3,14 @@ package hexlet.code.app.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.model.User;
+import hexlet.code.filter.JWTHelper;
+import hexlet.code.repository.model.User;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Map;
 
 
 @Component
@@ -21,6 +24,13 @@ public class TestUtils {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JWTHelper jwtHelper;
+
+    public String generateToken() {
+        return jwtHelper.expiring(Map.of("username", "email@email.com"));
+    }
 
     public void tearDown() {
         userRepository.deleteAll();

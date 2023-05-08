@@ -3,10 +3,10 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
-import hexlet.code.model.User;
+import hexlet.code.repository.model.User;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.repository.dto.UserDtoRq;
-import hexlet.code.repository.dto.UserDtoRs;
+import hexlet.code.dto.UserDtoRq;
+import hexlet.code.dto.UserDtoRs;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +28,7 @@ import static hexlet.code.app.utils.TestUtils.fromJson;
 import static hexlet.code.controller.UserController.USERS_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,6 +64,7 @@ public class UserControllerTest {
         final User expectedUser = userRepository.findAll().get(0);
         final var response = mockMvc.perform(
                         get(baseUrl + USERS_PATH + "/{id}", expectedUser.getId())
+                                .header(AUTHORIZATION, utils.generateToken())
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -81,7 +83,8 @@ public class UserControllerTest {
         utils.regDefaultUsers();
         final List<User> expectedUsers = userRepository.findAll();
         final var response = mockMvc.perform(
-                        get(baseUrl + USERS_PATH))
+                        get(baseUrl + USERS_PATH)
+                                .header(AUTHORIZATION, utils.generateToken()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -131,7 +134,8 @@ public class UserControllerTest {
         final var response = mockMvc.perform(
                         put(baseUrl + USERS_PATH + "/{id}", userRepository.findAll().get(0).getId())
                                 .content(asJson(expectedUser))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(AUTHORIZATION, utils.generateToken()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -145,7 +149,8 @@ public class UserControllerTest {
         utils.regDefaultUsers();
 
         final var response = mockMvc.perform(
-                        delete(baseUrl + USERS_PATH + "/{id}", userRepository.findAll().get(0).getId()))
+                        delete(baseUrl + USERS_PATH + "/{id}", userRepository.findAll().get(0).getId())
+                                .header(AUTHORIZATION, utils.generateToken()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

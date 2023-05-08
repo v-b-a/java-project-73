@@ -1,9 +1,9 @@
 package hexlet.code.service;
 
-import hexlet.code.model.User;
+import hexlet.code.repository.model.User;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.repository.dto.UserDtoRq;
-import hexlet.code.repository.dto.UserDtoRs;
+import hexlet.code.dto.UserDtoRq;
+import hexlet.code.dto.UserDtoRs;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

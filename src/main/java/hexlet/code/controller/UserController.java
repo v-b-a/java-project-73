@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
-import hexlet.code.repository.dto.UserDtoRq;
-import hexlet.code.repository.dto.UserDtoRs;
+import hexlet.code.dto.UserDtoRq;
+import hexlet.code.dto.UserDtoRs;
 import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
