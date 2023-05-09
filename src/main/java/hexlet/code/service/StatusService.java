@@ -15,7 +15,8 @@ public class StatusService {
 
 
     public Status getStatus(Long id) {
-        return statusRepository.findById(id).orElseThrow();
+        return statusRepository.findById(id)
+                .orElseThrow();
     }
 
     public List<Status> getStatuses() {
@@ -23,10 +24,10 @@ public class StatusService {
     }
 
     public Status createStatus(StatusDtoRq statusDto) {
-        return statusRepository.save(
-                Status.builder()
-                        .name(statusDto.getName())
-                        .build());
+        Status status = Status.builder()
+                .name(statusDto.getName())
+                .build();
+        return statusRepository.save(status);
     }
 
     public Status updateStatus(StatusDtoRq statusDto, Long id) {

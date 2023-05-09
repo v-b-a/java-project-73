@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.filter.JWTHelper;
+import hexlet.code.repository.StatusRepository;
+import hexlet.code.repository.model.Status;
 import hexlet.code.repository.model.User;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class TestUtils {
     private UserRepository userRepository;
 
     @Autowired
+    private StatusRepository statusRepository;
+
+    @Autowired
     private JWTHelper jwtHelper;
 
     public String generateToken() {
@@ -34,6 +39,7 @@ public class TestUtils {
 
     public void tearDown() {
         userRepository.deleteAll();
+        statusRepository.deleteAll();
     }
 
 //    public User getUserByEmail(final String email) {
@@ -53,6 +59,15 @@ public class TestUtils {
                 .firstName("fname2")
                 .lastName("lname2")
                 .password("pwd1234")
+                .build());
+    }
+
+    public void regDefaultStatus() {
+        statusRepository.save(Status.builder()
+                .name("To Do")
+                .build());
+        statusRepository.save(Status.builder()
+                .name("Ready")
                 .build());
     }
 

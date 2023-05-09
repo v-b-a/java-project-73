@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+import static hexlet.code.controller.StatusController.STATUS_PATH;
+
 @RestController
-@RequestMapping("${base-url}")
+@RequestMapping("${base-url}" + STATUS_PATH)
 @AllArgsConstructor
 public class StatusController {
-    private static final String STATUS_PATH = "/status";
+    public static final String STATUS_PATH = "/status";
     private final StatusService statusService;
 
     @GetMapping("/{id}")
