@@ -47,6 +47,9 @@ public class User {
     @Temporal(TIMESTAMP)
     private Date createdAt;
 
+//    @OneToMany(mappedBy = "user")
+//    private List<Task> tasks;
+
     public User(final Long id) {
         this.id = id;
     }

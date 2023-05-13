@@ -1,9 +1,11 @@
 spring:
   application:
-    name: app
+    name: taskManager
 
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: create-drop
 
   liquibase:
     enabled: true

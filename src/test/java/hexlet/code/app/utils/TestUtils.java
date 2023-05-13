@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.filter.JWTHelper;
 import hexlet.code.repository.StatusRepository;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.model.Status;
+import hexlet.code.repository.model.Task;
 import hexlet.code.repository.model.User;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +33,17 @@ public class TestUtils {
     private StatusRepository statusRepository;
 
     @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
     private JWTHelper jwtHelper;
 
     public String generateToken() {
-        return jwtHelper.expiring(Map.of("username", "email@email.com"));
+        return jwtHelper.expiring(Map.of("username", TEST_EMAIL, "password", "pwd123"));
     }
 
     public void tearDown() {
+        taskRepository.deleteAll();
         userRepository.deleteAll();
         statusRepository.deleteAll();
     }
@@ -60,6 +66,30 @@ public class TestUtils {
                 .lastName("lname2")
                 .password("pwd1234")
                 .build());
+    }
+
+    public void regDefaultTask() {
+        regDefaultUsers();
+        regDefaultStatus();
+        User author = userRepository.findAll().get(0);
+        User executor = userRepository.findAll().get(1);
+        Status status = statusRepository.findAll().get(0);
+        taskRepository.save(Task.builder()
+                .name("Task name")
+                .author(author)
+                .executor(executor)
+                .taskStatus(status)
+                .description("Some Description")
+                .build());
+
+        taskRepository.save(Task.builder()
+                .name("Task name 2")
+                .author(author)
+                .executor(executor)
+                .taskStatus(status)
+                .description("Some Description 2")
+                .build());
+
     }
 
     public void regDefaultStatus() {

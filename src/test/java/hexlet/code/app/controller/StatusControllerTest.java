@@ -3,6 +3,7 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
+import hexlet.code.dto.StatusDtoRq;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.model.Status;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static hexlet.code.app.config.SpringConfigs.TEST_PROFILE;
+import static hexlet.code.app.utils.TestUtils.asJson;
 import static hexlet.code.app.utils.TestUtils.fromJson;
 import static hexlet.code.controller.StatusController.STATUS_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +29,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -90,42 +95,42 @@ public class StatusControllerTest {
         assertEquals(expected.get(1).getName(), actual.get(1).getName());
     }
 
-//    @Test
-//    public void createStatusTest() throws Exception {
-//        utils.regDefaultUsers();
-//        StatusDtoRq status = new StatusDtoRq("ToDo");
-//
-//        mockMvc.perform(
-//                        post(baseUrl + STATUS_PATH)
-//                                .content(asJson(status))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .header(AUTHORIZATION, utils.generateToken()))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse();
-//
-//        assertEquals(statusRepository.findAll().size(), 1);
-//        assertEquals(statusRepository.findAll().get(0).getName(), "ToDo");
-//    }
-//
-//    @Test
-//    public void updateStatusTest() throws Exception {
-//        utils.regDefaultStatus();
-//
-//
-//        StatusDtoRq status = new StatusDtoRq("ToDo2");
-//
-//        final var response = mockMvc.perform(
-//                        put(baseUrl + STATUS_PATH + "/{id}", statusRepository.findAll().get(0).getId())
-//                                .content(asJson(status))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .header(AUTHORIZATION, utils.generateToken()))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse();
-//
-//        assertEquals(status.getName(), statusRepository.findAll().get(0).getName());
-//    }
+    @Test
+    public void createStatusTest() throws Exception {
+        utils.regDefaultUsers();
+        StatusDtoRq status = StatusDtoRq.builder().name("To do").build();
+
+        mockMvc.perform(
+                        post(baseUrl + STATUS_PATH)
+                                .content(asJson(status))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(AUTHORIZATION, utils.generateToken()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(statusRepository.findAll().size(), 1);
+        assertEquals(statusRepository.findAll().get(0).getName(), "To do");
+    }
+
+    @Test
+    public void updateStatusTest() throws Exception {
+        utils.regDefaultStatus();
+
+
+        StatusDtoRq status = new StatusDtoRq("ToDo2");
+
+        final var response = mockMvc.perform(
+                        put(baseUrl + STATUS_PATH + "/{id}", statusRepository.findAll().get(0).getId())
+                                .content(asJson(status))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(AUTHORIZATION, utils.generateToken()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(status.getName(), statusRepository.findAll().get(0).getName());
+    }
 
     @Test
     public void deleteStatusTest() throws Exception {

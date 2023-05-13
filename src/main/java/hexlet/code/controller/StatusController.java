@@ -22,7 +22,7 @@ import static hexlet.code.controller.StatusController.STATUS_PATH;
 @RequestMapping("${base-url}" + STATUS_PATH)
 @AllArgsConstructor
 public class StatusController {
-    public static final String STATUS_PATH = "/status";
+    public static final String STATUS_PATH = "/statuses";
     private final StatusService statusService;
 
     @GetMapping("/{id}")

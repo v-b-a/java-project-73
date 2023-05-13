@@ -90,7 +90,7 @@ liquibase {
 			username ''
 			password ''
 			// Сравниваем с моделями, задавая пакет
-			referenceUrl 'hibernate:spring:hexlet.code.model' +
+			referenceUrl 'hibernate:spring:hexlet.code.repository.model' +
 					// Указываем диалект
 					'?dialect=org.hibernate.dialect.H2Dialect' +
 					// Указываем правила именования таблиц и столбцов,
