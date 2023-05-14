@@ -48,10 +48,6 @@ public class TestUtils {
         statusRepository.deleteAll();
     }
 
-//    public User getUserByEmail(final String email) {
-//        return userRepository.findByEmail(email).get();
-//    }
-
     public void regDefaultUsers() {
         userRepository.save(User.builder()
                 .email(TEST_EMAIL)

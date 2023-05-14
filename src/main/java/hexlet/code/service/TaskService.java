@@ -37,19 +37,32 @@ public class TaskService {
     }
 
     private TaskDtoRs toTaskDtoRs(Task task) {
-        return TaskDtoRs.builder()
-                .id(task.getId())
-                .author(toUserDto(task.getAuthor()))
-                .executor(toUserDto(task.getExecutor()))
-                .taskStatus(task.getTaskStatus())
-                .name(task.getName())
-                .description(task.getDescription())
-                .createAt(task.getCreateAt())
-                .build();
+        if (task.getExecutor() == null) {
+            return TaskDtoRs.builder()
+                    .id(task.getId())
+                    .author(toUserDto(task.getAuthor()))
+                    .taskStatus(task.getTaskStatus())
+                    .name(task.getName())
+                    .description(task.getDescription())
+                    .createAt(task.getCreateAt())
+                    .build();
+
+        } else {
+            return TaskDtoRs.builder()
+                    .id(task.getId())
+                    .author(toUserDto(task.getAuthor()))
+                    .executor(toUserDto(task.getExecutor()))
+                    .taskStatus(task.getTaskStatus())
+                    .name(task.getName())
+                    .description(task.getDescription())
+                    .createAt(task.getCreateAt())
+                    .build();
+        }
     }
 
     private Task toTask(TaskDtoRq taskDtoRq, User author, User executor, Status status) {
         return Task.builder()
+                .name(taskDtoRq.getName())
                 .author(author)
                 .executor(executor)
                 .taskStatus(status)
@@ -66,24 +79,26 @@ public class TaskService {
         User author = userRepository.getById(taskDtoRq.getAuthorId());
         User executor = null;
         if (taskDtoRq.getExecutorId() != null) {
-            executor = userRepository.getById(taskDtoRq.getExecutorId());
+            executor = userRepository.findById(taskDtoRq.getExecutorId()).orElseThrow();
         }
-        Status status = statusRepository.getById(taskDtoRq.getTaskStatusId());
-        return toTaskDtoRs(taskRepository.save(toTask(taskDtoRq, author, executor, status)));
+        Status status = statusRepository.findById(taskDtoRq.getTaskStatusId()).orElseThrow();
+        Task task = taskRepository.save(toTask(taskDtoRq, author, executor, status));
+        return toTaskDtoRs(task);
     }
 
     public TaskDtoRs updateTask(TaskDtoRqUpdate taskDtoRq, Long id) {
-        Task task = taskRepository.getById(id);
+        Task task = taskRepository.findById(id).orElseThrow();
         User executor = null;
         if (taskDtoRq.getExecutorId() != null) {
-            executor = userRepository.getById(taskDtoRq.getExecutorId());
+            executor = userRepository.findById(taskDtoRq.getExecutorId()).orElseThrow();
         }
-        Status status = statusRepository.getById(taskDtoRq.getTaskStatusId());
+        Status status = statusRepository.findById(taskDtoRq.getTaskStatusId()).orElseThrow();
         task.setName(taskDtoRq.getName());
         task.setDescription(taskDtoRq.getDescription());
         task.setExecutor(executor);
         task.setTaskStatus(status);
-        return toTaskDtoRs(taskRepository.save(task));
+        Task newTask = taskRepository.save(task);
+        return toTaskDtoRs(newTask);
     }
 
     public void deleteTask(Long id) {

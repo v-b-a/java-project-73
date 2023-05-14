@@ -3,6 +3,8 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
+import hexlet.code.dto.TaskDtoRq;
+import hexlet.code.dto.TaskDtoRqUpdate;
 import hexlet.code.dto.TaskDtoRs;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static hexlet.code.app.config.SpringConfigs.TEST_PROFILE;
+import static hexlet.code.app.utils.TestUtils.asJson;
 import static hexlet.code.app.utils.TestUtils.fromJson;
 import static hexlet.code.controller.TaskController.TASK_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +34,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -39,6 +46,9 @@ public class TaskControllerTest {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private UserRepository userRepository;
@@ -102,53 +112,54 @@ public class TaskControllerTest {
     }
 
 
-//    @Test
-//    public void createTaskTest() throws Exception {
-//        utils.regDefaultUsers();
-//        utils.regDefaultStatus();
-//        final var task = TaskDtoRq.builder()
-//                .name("Task 1")
-//                .description("Description 1")
-//                .authorId(1L)
-//                .taskStatusId(1L)
-//                .build();
-//
-//        final var response = mockMvc.perform(
-//                        post(baseUrl + TASK_PATH)
-//                                .content(asJson(task))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .header(AUTHORIZATION, utils.generateToken()))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse();
-//
-//        assertEquals(taskRepository.findAll().size(), 1);
-//        assertEquals(taskRepository.findAll().get(0).getDescription(), "Description 1");
-//    }
+    @Test
+    public void createTaskTest() throws Exception {
+        utils.regDefaultTask();
+        final var task = TaskDtoRq.builder()
+                .name("Task ")
+                .description("Description 2")
+                .authorId(taskRepository.findAll().get(0).getAuthor().getId())
+                .taskStatusId(taskRepository.findAll().get(0).getTaskStatus().getId())
+                .build();
 
-//    @Test
-//    public void updateTaskTest() throws Exception {
-//        utils.regDefaultTask();
-//
-//
-//        final var expectedTask = TaskDtoRqUpdate.builder()
-//                .name("Task 1")
-//                .description("Desc 1")
-//                .taskStatusId(1L)
-//                .build();
-//
-//        final var response = mockMvc.perform(
-//                        put(baseUrl + TASK_PATH + "/{id}", taskRepository.findAll().get(0).getId())
-//                                .content(asJson(expectedTask))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .header(AUTHORIZATION, utils.generateToken()))
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse();
-//
-//        assertEquals(expectedTask.getName(), taskRepository.findAll().get(0).getName());
-//        assertEquals(expectedTask.getDescription(), taskRepository.findAll().get(0).getDescription());
-//    }
+        mockMvc.perform(
+                        post(baseUrl + TASK_PATH)
+                                .content(asJson(task))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(AUTHORIZATION, utils.generateToken()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(taskRepository.findAll().size(), 3);
+        assertEquals(taskRepository.findAll().get(2).getDescription(), "Description 2");
+    }
+
+    @Test
+    public void updateTaskTest() throws Exception {
+        String sql = "ALTER TABLE statuses ALTER COLUMN id RESTART WITH 1";
+        jdbcTemplate.execute(sql);
+        utils.regDefaultTask();
+
+
+        final var expectedTask = TaskDtoRqUpdate.builder()
+                .name("Task 1")
+                .description("Desc 1")
+                .taskStatusId(1L)
+                .build();
+
+        mockMvc.perform(
+                        put(baseUrl + TASK_PATH + "/{id}", taskRepository.findAll().get(0).getId())
+                                .content(asJson(expectedTask))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(AUTHORIZATION, utils.generateToken()))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(expectedTask.getName(), taskRepository.findAll().get(0).getName());
+        assertEquals(expectedTask.getDescription(), taskRepository.findAll().get(0).getDescription());
+    }
 
     @Test
     public void deleteTask() throws Exception {

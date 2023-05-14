@@ -21,6 +21,8 @@ spring:
       settings:
         web-allow-others: true
 
+
+
 logging:
   level:
     root: INFO
