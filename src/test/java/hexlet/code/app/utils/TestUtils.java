@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.filter.JWTHelper;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.model.Label;
 import hexlet.code.repository.model.Status;
 import hexlet.code.repository.model.Task;
 import hexlet.code.repository.model.User;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,6 +36,9 @@ public class TestUtils {
     private StatusRepository statusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
@@ -46,6 +52,7 @@ public class TestUtils {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         statusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     public void regDefaultUsers() {
@@ -62,6 +69,15 @@ public class TestUtils {
                 .lastName("lname2")
                 .password("pwd1234")
                 .build());
+    }
+
+    public void regDefaultLabel() {
+        Label label1 = new Label("ASAP");
+        Label label2 = new Label("A$AP");
+        regDefaultTask();
+        labelRepository.save(label1);
+        labelRepository.save(label2);
+        taskRepository.findAll().get(0).setLabel(List.of(label1, label2));
     }
 
     public void regDefaultTask() {
