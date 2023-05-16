@@ -33,6 +33,7 @@ dependencies {
 	annotationProcessor(
 			'org.projectlombok:lombok:1.18.22',
 			'javax.annotation:javax.annotation-api:1.3.2',
+			'com.querydsl:querydsl-apt:5.0.0:jpa',
 			'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
 	)
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

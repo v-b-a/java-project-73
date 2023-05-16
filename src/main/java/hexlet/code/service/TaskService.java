@@ -1,5 +1,6 @@
 package hexlet.code.service;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDtoRq;
 import hexlet.code.dto.TaskDtoRqUpdate;
 import hexlet.code.dto.TaskDtoRs;
@@ -14,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -72,6 +75,13 @@ public class TaskService {
 
     public List<TaskDtoRs> getTasks() {
         return taskRepository.findAll().stream().map(this::toTaskDtoRs).toList();
+    }
+
+    public List<TaskDtoRs> getTasks(Predicate predicate) {
+        return StreamSupport.stream(
+                        taskRepository.findAll(predicate).spliterator(), false)
+                .map(this::toTaskDtoRs)
+                .collect(Collectors.toList());
     }
 
 
