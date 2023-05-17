@@ -5,4 +5,5 @@
 
 Deployed project
 In Render: https://java-project-73.onrender.com
+OpenApi Spec: https://java-project-73.onrender.com/swagger-ui.html
 In Railway: https://web-production-0229.up.railway.app/
