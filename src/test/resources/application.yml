@@ -19,3 +19,4 @@ spring:
 logging:
   level:
     root: INFO
+rollbar_token: 123212
