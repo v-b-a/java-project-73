@@ -8,7 +8,8 @@ Simple application for task management.<br>
 You can easily create new tasks, assign them to different categories and tag.
 
 ### Used technology
-<img src="https://img.shields.io/badge/Java-ED8?style=for-the-badge&logo=openjdk&logoColor=black"/><img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
+<img src="https://img.shields.io/badge/Java-ED8?style=for-the-badge&logo=openjdk&logoColor=black"/>
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
 <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
 <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white"/>
 <img src="https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white"/>
