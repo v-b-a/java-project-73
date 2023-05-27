@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY ./ .
 
+RUN gradle assembleFrontend
+
 RUN gradle installDist
 
 CMD build/install/app/bin/app
