@@ -158,7 +158,7 @@ installFrontend {
 	configure configFrontendTasks
 }
 
-processResources.dependsOn assembleFrontend
-// *****************************************************************************
-
-processResources.dependsOn assembleFrontend
+//processResources.dependsOn assembleFrontend
+//// *****************************************************************************
+//
+//processResources.dependsOn assembleFrontend
