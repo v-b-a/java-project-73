@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ./ .
 
-RUN gradle assembleFrontend
+#RUN gradle assembleFrontend
 
 RUN gradle installDist
 
