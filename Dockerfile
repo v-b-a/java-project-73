@@ -1,11 +1,9 @@
-FROM gradle:7.4.2-jdk17
+FROM gradle:7.3.1-jdk17
 
 WORKDIR /app
 
 COPY ./ .
 
-#RUN gradle assembleFrontend
-
 RUN gradle installDist
 
-CMD build/install/app/bin/app
+CMD ./build/install/app/bin/app
