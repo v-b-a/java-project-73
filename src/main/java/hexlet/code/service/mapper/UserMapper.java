@@ -13,7 +13,9 @@ public class UserMapper {
     private final PasswordEncoder passwordEncoder;
 
     public UserDtoRs toUserDto(User user) {
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
         return UserDtoRs.builder()
                 .id(user.getId())
                 .email(user.getEmail())
