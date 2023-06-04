@@ -4,19 +4,20 @@ import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDtoRq;
 import hexlet.code.dto.TaskDtoRqUpdate;
 import hexlet.code.dto.TaskDtoRs;
-import hexlet.code.dto.UserDtoRs;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.model.Status;
 import hexlet.code.repository.model.Task;
 import hexlet.code.repository.model.User;
+import hexlet.code.service.mapper.TaskMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -24,43 +25,10 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final StatusRepository statusRepository;
+    private final TaskMapper taskMapper;
 
     public TaskDtoRs getTask(Long id) {
-        return toTaskDtoRs(taskRepository.getById(id));
-    }
-
-    private UserDtoRs toUserDto(User user) {
-        return UserDtoRs.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .createAt(user.getCreatedAt())
-                .build();
-    }
-
-    private TaskDtoRs toTaskDtoRs(Task task) {
-        if (task.getExecutor() == null) {
-            return TaskDtoRs.builder()
-                    .id(task.getId())
-                    .author(toUserDto(task.getAuthor()))
-                    .taskStatus(task.getTaskStatus())
-                    .name(task.getName())
-                    .description(task.getDescription())
-                    .createAt(task.getCreateAt())
-                    .build();
-
-        } else {
-            return TaskDtoRs.builder()
-                    .id(task.getId())
-                    .author(toUserDto(task.getAuthor()))
-                    .executor(toUserDto(task.getExecutor()))
-                    .taskStatus(task.getTaskStatus())
-                    .name(task.getName())
-                    .description(task.getDescription())
-                    .createAt(task.getCreateAt())
-                    .build();
-        }
+        return taskMapper.toTaskDtoRs(taskRepository.getById(id));
     }
 
     private Task toTask(TaskDtoRq taskDtoRq, User author, User executor, Status status) {
@@ -74,14 +42,14 @@ public class TaskService {
     }
 
     public List<TaskDtoRs> getTasks() {
-        return taskRepository.findAll().stream().map(this::toTaskDtoRs).toList();
+        return taskRepository.findAll().stream().map(taskMapper::toTaskDtoRs).toList();
     }
 
     public List<TaskDtoRs> getTasks(Predicate predicate) {
         return StreamSupport.stream(
                         taskRepository.findAll(predicate).spliterator(), false)
-                .map(this::toTaskDtoRs)
-                .collect(Collectors.toList());
+                .map(taskMapper::toTaskDtoRs)
+                .collect(toList());
     }
 
 
@@ -93,7 +61,7 @@ public class TaskService {
         }
         Status status = statusRepository.findById(taskDtoRq.getTaskStatusId()).orElseThrow();
         Task task = taskRepository.save(toTask(taskDtoRq, author, executor, status));
-        return toTaskDtoRs(task);
+        return taskMapper.toTaskDtoRs(task);
     }
 
     public TaskDtoRs updateTask(TaskDtoRqUpdate taskDtoRq, Long id) {
@@ -108,7 +76,7 @@ public class TaskService {
         task.setExecutor(executor);
         task.setTaskStatus(status);
         Task newTask = taskRepository.save(task);
-        return toTaskDtoRs(newTask);
+        return taskMapper.toTaskDtoRs(newTask);
     }
 
     public void deleteTask(Long id) {
