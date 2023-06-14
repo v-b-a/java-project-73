@@ -1,5 +1,6 @@
 package hexlet.code.repository.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
