@@ -7,15 +7,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -29,7 +31,7 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     public static final String LOGIN = "/login";
@@ -46,24 +48,38 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JWTHelper jwtHelper;
+    private final String baseUrl;
 
     public SecurityConfig(@Value("${base-url}") final String baseUrl,
                           final UserDetailsService userDetailsService,
-                          final PasswordEncoder passwordEncoder, final JWTHelper jwtHelper) {
+                          PasswordEncoder passwordEncoder, final JWTHelper jwtHelper) {
+        this.baseUrl = baseUrl;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
         this.loginRequest = new AntPathRequestMatcher("/api" + LOGIN, POST.toString());
+        this.jwtHelper = jwtHelper;
         this.publicUrls = new OrRequestMatcher(
                 loginRequest,
                 new AntPathRequestMatcher(baseUrl + USERS_PATH, POST.toString()),
                 new NegatedRequestMatcher(new AntPathRequestMatcher("/api" + "/**"))
         );
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtHelper = jwtHelper;
     }
 
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        System.out.println("!!!!!!!! login path !!!!!!!");
+        System.out.println(loginRequest.toString());
+
+        System.out.println("!!!!!!!!!!!!!!!");
+        return authProvider;
     }
 
     @Bean
@@ -71,34 +87,27 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    public void configure(final HttpSecurity http) throws Exception {
-
-        final var authenticationFilter = new JWTAuthenticationFilter(
-                authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),
-                loginRequest,
-                jwtHelper
-        );
-
-        final var authorizationFilter = new JWTAuthorizationFilter(
-                publicUrls,
-                jwtHelper
-        );
-
-        http.csrf().disable()
-                .authorizeRequests()
-                .requestMatchers(publicUrls).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilter(authenticationFilter)
-                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .logout().disable();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .headers()
-                .frameOptions()
-                .sameOrigin();
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers(publicUrls).permitAll()
+                .anyRequest().authenticated().and()
+                .addFilter(new JWTAuthenticationFilter(
+                        authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),
+                        loginRequest,
+                        jwtHelper
+                ))
+                .addFilterBefore(
+                        new JWTAuthorizationFilter(publicUrls, jwtHelper),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .formLogin().disable()
+                .sessionManagement().disable()
+                .logout().disable();
+
+        return http.build();
     }
 
 }
