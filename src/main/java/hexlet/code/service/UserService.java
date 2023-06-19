@@ -6,10 +6,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.model.User;
 import hexlet.code.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +13,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -48,19 +44,5 @@ public class UserService implements UserDetailsService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .map(this::toSpringUser)
-                .orElseThrow(() -> new UsernameNotFoundException("Not found user with 'username': " + username));
-    }
-
-    private org.springframework.security.core.userdetails.User toSpringUser(final User user) {
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority("USER")));
     }
 }
