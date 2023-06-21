@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +19,6 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.List;
-
 import static hexlet.code.controller.UserController.USERS_PATH;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -31,23 +27,12 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
     public static final String LOGIN = "/login";
-
-    public static final List<GrantedAuthority> DEFAULT_AUTHORITIES = List.of(new SimpleGrantedAuthority("USER"));
-
-    //Note: Сейчас разрешены:
-    // - GET('/api/users')
-    // - POST('/api/users')
-    // - POST('/api/login')
-    // - все запросы НЕ начинающиеся на '/api'
-    private final RequestMatcher publicUrls;
-    private final RequestMatcher loginRequest;
     private final UserDetailsService userDetailsService;
-//    private final PasswordEncoder passwordEncoder;
     private final JWTHelper jwtHelper;
     private final String baseUrl;
-
+    private final RequestMatcher loginRequest;
+    private final RequestMatcher publicUrls;
     public SecurityConfig(@Value("${base-url}") final String baseUrl,
                           final UserDetailsService userDetailsService,
                           final JWTHelper jwtHelper) {
@@ -62,10 +47,14 @@ public class SecurityConfig {
                 new NegatedRequestMatcher(new AntPathRequestMatcher(baseUrl + "/**"))
         );
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
@@ -77,16 +66,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests().anyRequest().permitAll();
         http.headers().frameOptions().disable(); // H2 console
         return http.build();
     }
-
 }
