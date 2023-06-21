@@ -1,7 +1,5 @@
 package hexlet.code.config;
 
-import hexlet.code.filter.JWTAuthenticationFilter;
-import hexlet.code.filter.JWTAuthorizationFilter;
 import hexlet.code.filter.JWTHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -27,6 +24,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.List;
 
 import static hexlet.code.controller.UserController.USERS_PATH;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -45,23 +43,23 @@ public class SecurityConfig {
     // - все запросы НЕ начинающиеся на '/api'
     private final RequestMatcher publicUrls;
     private final RequestMatcher loginRequest;
-//    private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
+//    private final PasswordEncoder passwordEncoder;
     private final JWTHelper jwtHelper;
     private final String baseUrl;
 
     public SecurityConfig(@Value("${base-url}") final String baseUrl,
                           final UserDetailsService userDetailsService,
-                          PasswordEncoder passwordEncoder, final JWTHelper jwtHelper) {
+                          final JWTHelper jwtHelper) {
         this.baseUrl = baseUrl;
-//        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-        this.loginRequest = new AntPathRequestMatcher("/api" + LOGIN, POST.toString());
+        this.userDetailsService = userDetailsService;
         this.jwtHelper = jwtHelper;
+        this.loginRequest = new AntPathRequestMatcher(baseUrl + LOGIN, POST.toString());
         this.publicUrls = new OrRequestMatcher(
                 loginRequest,
                 new AntPathRequestMatcher(baseUrl + USERS_PATH, POST.toString()),
-                new NegatedRequestMatcher(new AntPathRequestMatcher("/api" + "/**"))
+                new AntPathRequestMatcher(baseUrl + USERS_PATH, GET.toString()),
+                new NegatedRequestMatcher(new AntPathRequestMatcher(baseUrl + "/**"))
         );
     }
 
@@ -73,12 +71,8 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-        System.out.println("!!!!!!!! login path !!!!!!!");
-        System.out.println(loginRequest.toString());
-
-        System.out.println("!!!!!!!!!!!!!!!");
         return authProvider;
     }
 
@@ -89,24 +83,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(publicUrls).permitAll()
-                .anyRequest().authenticated().and()
-                .addFilter(new JWTAuthenticationFilter(
-                        authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),
-                        loginRequest,
-                        jwtHelper
-                ))
-                .addFilterBefore(
-                        new JWTAuthorizationFilter(publicUrls, jwtHelper),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .formLogin().disable()
-                .sessionManagement().disable()
-                .logout().disable();
-
+        http.csrf().disable()
+                .authorizeHttpRequests().anyRequest().permitAll();
+        http.headers().frameOptions().disable(); // H2 console
         return http.build();
     }
 
