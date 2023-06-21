@@ -45,7 +45,7 @@ public class SecurityConfig {
     // - все запросы НЕ начинающиеся на '/api'
     private final RequestMatcher publicUrls;
     private final RequestMatcher loginRequest;
-    private final UserDetailsService userDetailsService;
+//    private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JWTHelper jwtHelper;
     private final String baseUrl;
@@ -54,7 +54,7 @@ public class SecurityConfig {
                           final UserDetailsService userDetailsService,
                           PasswordEncoder passwordEncoder, final JWTHelper jwtHelper) {
         this.baseUrl = baseUrl;
-        this.userDetailsService = userDetailsService;
+//        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.loginRequest = new AntPathRequestMatcher("/api" + LOGIN, POST.toString());
         this.jwtHelper = jwtHelper;
@@ -73,7 +73,7 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         System.out.println("!!!!!!!! login path !!!!!!!");
         System.out.println(loginRequest.toString());
