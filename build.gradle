@@ -3,22 +3,20 @@ plugins {
 	id 'checkstyle'
 	id 'org.springframework.boot' version '3.0.6'
 	id 'io.spring.dependency-management' version '1.1.0'
-	id 'com.adarshr.test-logger' version '2.1.1'
-	id 'com.github.ben-manes.versions' version '0.38.0'
+	id 'jacoco'
 	id 'org.liquibase.gradle' version '2.2.0'
-	// Плагины для swagger
-	// Позволяют получить сгенерированную документацию по API в виде json файла
-	id 'org.springdoc.openapi-gradle-plugin' version '1.3.3'
-	id 'com.github.johnrengelman.processes' version '0.5.0'
 	// Сборщик фронтенда
 	id 'org.siouan.frontend-jdk11' version '6.0.0'
 }
 
-group = 'io.hexlet.javaspringblog'
+group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = 17
 
-application {
-	mainClass = 'io.hexlet.javaspringblog.App'
+compileJava {
+	options.release = 17
+	options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -26,7 +24,6 @@ repositories {
 }
 
 dependencies {
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compileOnly 'org.projectlombok:lombok'
 
 	annotationProcessor(
@@ -36,18 +33,14 @@ dependencies {
 	)
 
 	implementation(
-			'org.springframework.boot:spring-boot-starter-data-jpa',
+			'org.springframework.boot:spring-boot-starter',
 			'org.springframework.boot:spring-boot-starter-web',
-			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.boot:spring-boot-starter-data-jpa',
 			'org.springframework.boot:spring-boot-starter-validation',
 			'org.springframework.boot:spring-boot-starter-security',
 			'io.jsonwebtoken:jjwt:0.9.1',
-			// Зависимость для swagger
-			// Позволяет сгенерировать и проматривать интерактивную документацию по API
-			'org.springdoc:springdoc-openapi-ui:1.7.0',
 			'org.liquibase:liquibase-core',
 			'com.querydsl:querydsl-jpa:5.0.0:jakarta',
-			'com.rollbar:rollbar-spring-boot-webmvc:1.10.0'
 	)
 
 	liquibaseRuntime(
@@ -57,7 +50,6 @@ dependencies {
 			'org.liquibase.ext:liquibase-hibernate6:4.21.1',
 			'org.springframework.boot:spring-boot-starter-data-jpa',
 			'com.h2database:h2',
-
 	)
 
 	runtimeOnly (
@@ -65,30 +57,17 @@ dependencies {
 			'org.postgresql:postgresql:42.6.0'
 	)
 
-	testImplementation(
-			'org.springframework.boot:spring-boot-starter-security',
-			'org.springframework.security:spring-security-test',
-			'org.springframework.boot:spring-boot-starter-test',
-			'com.tobedevoured.modelcitizen:spring:0.8.3'
-	)
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-wrapper {
-	gradleVersion = '7.4'
-	distributionType = Wrapper.DistributionType.ALL
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+	reports {
+		xml.required = true
+	}
 }
 
-compileJava {
-	options.release = 17
-	options.encoding = 'UTF-8'
-}
-
-test {
-	useJUnitPlatform()
-}
-
-// Настраиваем таску diffChangeLog таким образом,
-// чтобы миграции учитывали изменения в моделях
 diffChangelog {
 	dependsOn compileJava
 }
@@ -111,6 +90,10 @@ liquibase {
 					'&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
 		}
 	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
 // Сборка фронтенда.
@@ -146,6 +129,6 @@ installFrontend {
 processResources.dependsOn assembleFrontend
 // *****************************************************************************
 
-// Таска нужная heroku для деплоя
+
 task stage(dependsOn: [clean, installDist])
 installDist.mustRunAfter clean
