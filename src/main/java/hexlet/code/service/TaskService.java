@@ -48,7 +48,7 @@ public class TaskService {
 
     public List<TaskDtoRs> getTasks(Predicate predicate) {
         return StreamSupport.stream(
-                        taskRepository.findAll(predicate).spliterator(), false)
+                        taskRepository.findAll(predicate).spliterator(), true)
                 .map(taskMapper::toTaskDtoRs)
                 .collect(toList());
     }
