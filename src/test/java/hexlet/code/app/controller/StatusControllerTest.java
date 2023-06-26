@@ -139,7 +139,7 @@ public class StatusControllerTest {
         final var response = mockMvc.perform(
                         delete(baseUrl + STATUS_PATH + "/{id}", statusRepository.findAll().get(0).getId())
                                 .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse();
 

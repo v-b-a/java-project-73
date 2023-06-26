@@ -127,7 +127,7 @@ public class TaskControllerTest {
                                 .content(asJson(task))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 
@@ -168,7 +168,7 @@ public class TaskControllerTest {
         final var response = mockMvc.perform(
                         delete(baseUrl + TASK_PATH + "/{id}", taskRepository.findAll().get(0).getId())
                                 .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse();
 

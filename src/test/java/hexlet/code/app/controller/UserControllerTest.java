@@ -151,7 +151,7 @@ public class UserControllerTest {
         final var response = mockMvc.perform(
                         delete(baseUrl + USERS_PATH + "/{id}", userRepository.findAll().get(0).getId())
                                 .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse();
 
