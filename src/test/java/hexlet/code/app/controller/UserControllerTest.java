@@ -111,7 +111,7 @@ public class UserControllerTest {
                         post(baseUrl + USERS_PATH)
                                 .content(asJson(user))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 
