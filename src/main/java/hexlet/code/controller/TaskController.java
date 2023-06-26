@@ -52,7 +52,7 @@ public class TaskController {
     })
     @GetMapping("")
     public List<TaskDtoRs> getTasks(@QuerydslPredicate(root = Task.class) final Predicate predicate) {
-        return predicate == null ? taskService.getTasks() : taskService.getTasks(predicate);
+        return taskService.getTasks(predicate);
     }
 
     @Operation(summary = "Create task")

@@ -13,7 +13,6 @@ public class TaskDtoRq {
     private String description;
     @NotNull(message = "Status is required")
     private Long taskStatusId;
-//    @NotNull(message = "Author is required")
     private Long authorId;
     private Long executorId;
 }
