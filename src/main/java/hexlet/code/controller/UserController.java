@@ -74,6 +74,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Users is not found")
     })
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }

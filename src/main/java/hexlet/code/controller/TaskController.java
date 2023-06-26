@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,6 +58,7 @@ public class TaskController {
     @Operation(summary = "Create task")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Tasks successfully created"))
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskDtoRs createTask(@RequestBody @Valid TaskDtoRq taskDtoRq) {
         return taskService.createTask(taskDtoRq);
     }
@@ -66,6 +69,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Tasks is not found")
     })
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public TaskDtoRs updateTask(@RequestBody @Valid TaskDtoRqUpdate taskDtoRq, @PathVariable("id") Long id) {
         return taskService.updateTask(taskDtoRq, id);
     }
@@ -76,6 +80,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Tasks is not found")
     })
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
     }
