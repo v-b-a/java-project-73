@@ -4,6 +4,7 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,5 +31,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER"))
         );
+    }
+
+    public String getCurrentUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public User getCurrentUser() {
+        return userRepository.findByEmail(getCurrentUserName()).get();
     }
 }

@@ -26,6 +26,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final StatusRepository statusRepository;
     private final TaskMapper taskMapper;
+    private final UserDetailsServiceImpl userDetailsService;
 
     public TaskDtoRs getTask(Long id) {
         return taskMapper.toTaskDtoRs(taskRepository.getById(id));
@@ -54,7 +55,7 @@ public class TaskService {
 
 
     public TaskDtoRs createTask(TaskDtoRq taskDtoRq) {
-        User author = userRepository.getById(taskDtoRq.getAuthorId());
+        User author = userDetailsService.getCurrentUser();
         User executor = null;
         if (taskDtoRq.getExecutorId() != null) {
             executor = userRepository.findById(taskDtoRq.getExecutorId()).orElseThrow();
