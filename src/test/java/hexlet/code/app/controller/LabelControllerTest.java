@@ -7,7 +7,6 @@ import hexlet.code.dto.LabelDtoRq;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.model.Label;
-import hexlet.code.repository.model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +44,6 @@ public class LabelControllerTest {
 
     @Autowired
     private TaskRepository taskRepository;
-
-    @Autowired
-    private Task task;
 
     @Value("${base-url}")
     @Autowired
