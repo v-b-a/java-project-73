@@ -1,9 +1,12 @@
 package hexlet.code.service.mapper;
 
 import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.repository.model.Label;
 import hexlet.code.repository.model.Task;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -18,7 +21,10 @@ public class TaskMapper {
                 .taskStatus(task.getTaskStatus())
                 .name(task.getName())
                 .description(task.getDescription())
-                .createAt(task.getCreateAt())
+                .createdAt(task.getCreateAt())
+                .labels(task.getLabel() == null ? null : task.getLabel().stream()
+                                .map(Label::getName)
+                                .collect(Collectors.toList()))
                 .build();
     }
 }
