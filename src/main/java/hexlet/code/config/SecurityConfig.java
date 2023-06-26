@@ -1,5 +1,7 @@
 package hexlet.code.config;
 
+import hexlet.code.filter.JWTAuthenticationFilter;
+import hexlet.code.filter.JWTAuthorizationFilter;
 import hexlet.code.filter.JWTHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -73,9 +76,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests().anyRequest().permitAll();
-        http.headers().frameOptions().disable(); // H2 console
+        http
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers(publicUrls).permitAll()
+                .anyRequest().authenticated().and()
+                .addFilter(new JWTAuthenticationFilter(
+                        authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)),
+                        loginRequest,
+                        jwtHelper
+                ))
+                .addFilterBefore(
+                        new JWTAuthorizationFilter(publicUrls, jwtHelper),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .formLogin().disable()
+                .sessionManagement().disable()
+                .logout().disable();
+
         return http.build();
     }
 }
