@@ -17,6 +17,6 @@ public class UserDtoRq {
     @NotBlank(message = "lastName is required")
     private String lastName;
     @NotBlank(message = "password is required")
-    @Size(min = 5, max = 10, message = "Password length should be between 5 and 10")
+    @Size(min = 3, message = "Password length should be between min 3")
     private String password;
 }
