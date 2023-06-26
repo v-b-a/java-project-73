@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create user")
-    @ApiResponse(responseCode = "200", description = "User created")
+    @ApiResponse(responseCode = "201", description = "User created")
     @PostMapping("")
     public UserDtoRs createUser(@RequestBody @Valid UserDtoRq user) {
         return userService.createUser(user);
