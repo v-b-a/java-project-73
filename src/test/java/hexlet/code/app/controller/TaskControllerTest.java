@@ -168,7 +168,7 @@ public class TaskControllerTest {
         final var response = mockMvc.perform(
                         delete(baseUrl + TASK_PATH + "/{id}", taskRepository.findAll().get(0).getId())
                                 .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 

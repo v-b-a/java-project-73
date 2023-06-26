@@ -140,7 +140,7 @@ public class LabelControllerTest {
 
         mockMvc.perform(delete(baseUrl + LABEL_PATH + "/{id}", labelRepository.findAll().get(0).getId())
                         .header(AUTHORIZATION, utils.generateToken()))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 

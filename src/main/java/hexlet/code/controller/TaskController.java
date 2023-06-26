@@ -80,7 +80,6 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Tasks is not found")
     })
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
     }

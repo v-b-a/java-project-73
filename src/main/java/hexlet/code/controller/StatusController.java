@@ -49,7 +49,6 @@ public class StatusController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStatus(@PathVariable("id") Long id) {
         statusService.deleteStatus(id);
     }
