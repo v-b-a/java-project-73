@@ -12,5 +12,5 @@ public class UserDtoRs {
     private String email;
     private String firstName;
     private String lastName;
-    private Date createAt;
+    private Date createdAt;
 }
