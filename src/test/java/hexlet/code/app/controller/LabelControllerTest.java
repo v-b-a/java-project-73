@@ -107,7 +107,7 @@ public class LabelControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, utils.generateToken())
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 
