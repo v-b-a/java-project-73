@@ -1,7 +1,6 @@
 package hexlet.code.repository;
 
 import hexlet.code.repository.model.QTask;
-import com.querydsl.core.types.dsl.SimpleExpression;
 import hexlet.code.repository.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -15,9 +14,9 @@ public interface TaskRepository extends JpaRepository<Task, Long>, QuerydslPredi
 
     @Override
     default void customize(QuerydslBindings bindings, QTask task) {
-        bindings.bind(task.taskStatus.id).first(SimpleExpression::eq);
-        bindings.bind(task.executor.id).first(SimpleExpression::eq);
-        bindings.bind(task.label.any().id).first((SimpleExpression::eq));
-        bindings.bind(task.author.id).first(SimpleExpression::eq);
+//        bindings.bind(task.taskStatus.id).first(SimpleExpression::eq);
+//        bindings.bind(task.executor.id).first(SimpleExpression::eq);
+//        bindings.bind(task.label.any().id).first((SimpleExpression::eq));
+//        bindings.bind(task.author.id).first(SimpleExpression::eq);
     }
 }
