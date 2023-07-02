@@ -77,7 +77,7 @@ public class TestUtils {
         regDefaultTask();
         labelRepository.save(label1);
         labelRepository.save(label2);
-        taskRepository.findAll().get(0).setLabel(List.of(label1, label2));
+        taskRepository.findAll().get(0).setLabels(List.of(label1, label2));
     }
 
     public void regDefaultTask() {

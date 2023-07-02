@@ -22,7 +22,7 @@ public class TaskMapper {
                 .name(task.getName())
                 .description(task.getDescription())
                 .createdAt(task.getCreateAt())
-                .labels(task.getLabel() == null ? null : task.getLabel().stream()
+                .labels(task.getLabels() == null ? null : task.getLabels().stream()
                                 .map(Label::getName)
                                 .collect(Collectors.toList()))
                 .build();
