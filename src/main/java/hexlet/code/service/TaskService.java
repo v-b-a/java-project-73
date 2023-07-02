@@ -66,7 +66,8 @@ public class TaskService {
         }
         Status status = statusRepository.findById(taskDtoRq.getTaskStatusId()).orElseThrow();
 
-        List<Label> labels = taskDtoRq.getLabelIds() != null? labelRepository.findAllById(taskDtoRq.getLabelIds()) : null;
+        List<Label> labels = taskDtoRq.getLabelIds() != null
+                ? labelRepository.findAllById(taskDtoRq.getLabelIds()) : null;
         Task task = taskRepository.save(toTask(taskDtoRq, author, executor, status, labels));
         return taskMapper.toTaskDtoRs(task);
     }
