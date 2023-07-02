@@ -4,9 +4,11 @@ import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDtoRq;
 import hexlet.code.dto.TaskDtoRqUpdate;
 import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.repository.model.Label;
 import hexlet.code.repository.model.Status;
 import hexlet.code.repository.model.Task;
 import hexlet.code.repository.model.User;
@@ -25,6 +27,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final StatusRepository statusRepository;
+    private final LabelRepository labelRepository;
     private final TaskMapper taskMapper;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -32,13 +35,14 @@ public class TaskService {
         return taskMapper.toTaskDtoRs(taskRepository.getById(id));
     }
 
-    private Task toTask(TaskDtoRq taskDtoRq, User author, User executor, Status status) {
+    private Task toTask(TaskDtoRq taskDtoRq, User author, User executor, Status status, List<Label> labels) {
         return Task.builder()
                 .name(taskDtoRq.getName())
                 .author(author)
                 .executor(executor)
                 .taskStatus(status)
                 .description(taskDtoRq.getDescription())
+                .labels(labels)
                 .build();
     }
 
@@ -61,7 +65,9 @@ public class TaskService {
             executor = userRepository.findById(taskDtoRq.getExecutorId()).orElseThrow();
         }
         Status status = statusRepository.findById(taskDtoRq.getTaskStatusId()).orElseThrow();
-        Task task = taskRepository.save(toTask(taskDtoRq, author, executor, status));
+
+        List<Label> labels = taskDtoRq.getLabelIds() != null? labelRepository.findAllById(taskDtoRq.getLabelIds()) : null;
+        Task task = taskRepository.save(toTask(taskDtoRq, author, executor, status, labels));
         return taskMapper.toTaskDtoRs(task);
     }
 
