@@ -60,7 +60,7 @@ public class Task {
     private User executor;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Label> label;
+    private List<Label> labels;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)
