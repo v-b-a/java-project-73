@@ -1,4 +1,4 @@
-package hexlet.code.dto;
+package hexlet.code.dto.responseDto;
 
 import hexlet.code.repository.model.Status;
 import lombok.Builder;

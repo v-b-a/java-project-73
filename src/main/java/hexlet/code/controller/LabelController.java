@@ -1,6 +1,6 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.LabelDtoRq;
+import hexlet.code.dto.requestDto.LabelDtoRq;
 import hexlet.code.repository.model.Label;
 import hexlet.code.service.LabelService;
 import lombok.AllArgsConstructor;

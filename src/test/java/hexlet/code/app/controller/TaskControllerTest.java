@@ -3,9 +3,10 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
-import hexlet.code.dto.TaskDtoRq;
-import hexlet.code.dto.TaskDtoRqUpdate;
-import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.dto.requestDto.TaskDtoRq;
+import hexlet.code.dto.requestDto.TaskDtoRqUpdate;
+import hexlet.code.dto.responseDto.TaskDtoRs;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
@@ -55,6 +56,9 @@ public class TaskControllerTest {
 
     @Autowired
     private StatusRepository statusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Value("${base-url}")
     @Autowired

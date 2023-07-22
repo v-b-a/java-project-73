@@ -1,6 +1,6 @@
-package hexlet.code.service.mapper;
+package hexlet.code.controller.mapper;
 
-import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.dto.responseDto.TaskDtoRs;
 import hexlet.code.repository.model.Label;
 import hexlet.code.repository.model.Task;
 import lombok.AllArgsConstructor;

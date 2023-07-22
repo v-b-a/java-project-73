@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import com.querydsl.core.types.Predicate;
-import hexlet.code.dto.TaskDtoRq;
-import hexlet.code.dto.TaskDtoRqUpdate;
-import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.dto.requestDto.TaskDtoRq;
+import hexlet.code.dto.requestDto.TaskDtoRqUpdate;
+import hexlet.code.dto.responseDto.TaskDtoRs;
 import hexlet.code.repository.model.Task;
 import hexlet.code.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.UserDtoRq;
-import hexlet.code.dto.UserDtoRs;
+import hexlet.code.dto.requestDto.UserDtoRq;
+import hexlet.code.dto.responseDto.UserDtoRs;
 import hexlet.code.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +28,7 @@ import static hexlet.code.controller.UserController.USERS_PATH;
 @AllArgsConstructor
 public class UserController {
     public static final String USERS_PATH = "/users";
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
     @Operation(summary = "Get a user by id")
     @ApiResponses(value = {
@@ -37,7 +37,7 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public UserDtoRs getUserById(@PathVariable("id") Long id) {
-        return userService.getUserById(id);
+        return userServiceImpl.getUserById(id);
     }
 
     @Operation(summary = "Get users")
@@ -47,7 +47,7 @@ public class UserController {
     })
     @GetMapping("")
     public List<UserDtoRs> getUsers() {
-        return userService.getUsers();
+        return userServiceImpl.getUsers();
     }
 
     @Operation(summary = "Create user")
@@ -55,7 +55,7 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "User created")
     @PostMapping("")
     public UserDtoRs createUser(@RequestBody @Valid UserDtoRq user) {
-        return userService.createUser(user);
+        return userServiceImpl.createUser(user);
     }
 
     @Operation(summary = "Update user")
@@ -65,7 +65,7 @@ public class UserController {
     })
     @PutMapping("/{id}")
     public UserDtoRs updateUser(@RequestBody @Valid UserDtoRq user, @PathVariable("id") Long id) {
-        return userService.updateUser(user, id);
+        return userServiceImpl.updateUser(user, id);
     }
 
     @Operation(summary = "Delete user")
@@ -75,6 +75,6 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
+        userServiceImpl.deleteUser(id);
     }
 }

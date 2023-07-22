@@ -3,7 +3,7 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
-import hexlet.code.dto.LabelDtoRq;
+import hexlet.code.dto.requestDto.LabelDtoRq;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.model.Label;

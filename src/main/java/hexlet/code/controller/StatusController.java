@@ -1,6 +1,6 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.StatusDtoRq;
+import hexlet.code.dto.requestDto.StatusDtoRq;
 import hexlet.code.repository.model.Status;
 import hexlet.code.service.StatusService;
 import jakarta.validation.Valid;

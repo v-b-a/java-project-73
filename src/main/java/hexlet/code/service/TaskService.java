@@ -1,9 +1,9 @@
 package hexlet.code.service;
 
 import com.querydsl.core.types.Predicate;
-import hexlet.code.dto.TaskDtoRq;
-import hexlet.code.dto.TaskDtoRqUpdate;
-import hexlet.code.dto.TaskDtoRs;
+import hexlet.code.dto.requestDto.TaskDtoRq;
+import hexlet.code.dto.requestDto.TaskDtoRqUpdate;
+import hexlet.code.dto.responseDto.TaskDtoRs;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
@@ -12,7 +12,7 @@ import hexlet.code.repository.model.Label;
 import hexlet.code.repository.model.Status;
 import hexlet.code.repository.model.Task;
 import hexlet.code.repository.model.User;
-import hexlet.code.service.mapper.TaskMapper;
+import hexlet.code.controller.mapper.TaskMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
-public class TaskService {
+public class TaskService implements TaskServiceInterface {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final StatusRepository statusRepository;
@@ -31,25 +31,17 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final UserDetailsServiceImpl userDetailsService;
 
+    @Override
     public TaskDtoRs getTask(Long id) {
         return taskMapper.toTaskDtoRs(taskRepository.getById(id));
     }
 
-    private Task toTask(TaskDtoRq taskDtoRq, User author, User executor, Status status, List<Label> labels) {
-        return Task.builder()
-                .name(taskDtoRq.getName())
-                .author(author)
-                .executor(executor)
-                .taskStatus(status)
-                .description(taskDtoRq.getDescription())
-                .labels(labels)
-                .build();
-    }
-
+    @Override
     public List<TaskDtoRs> getTasks() {
         return taskRepository.findAll().stream().map(taskMapper::toTaskDtoRs).toList();
     }
 
+    @Override
     public List<TaskDtoRs> getTasks(Predicate predicate) {
         return StreamSupport.stream(
                         taskRepository.findAll(predicate).spliterator(), true)
@@ -58,6 +50,7 @@ public class TaskService {
     }
 
 
+    @Override
     public TaskDtoRs createTask(TaskDtoRq taskDtoRq) {
         User author = userDetailsService.getCurrentUser();
         User executor = null;
@@ -72,6 +65,7 @@ public class TaskService {
         return taskMapper.toTaskDtoRs(task);
     }
 
+    @Override
     public TaskDtoRs updateTask(TaskDtoRqUpdate taskDtoRq, Long id) {
         Task task = taskRepository.findById(id).orElseThrow();
         User executor = null;
@@ -83,10 +77,23 @@ public class TaskService {
         task.setDescription(taskDtoRq.getDescription());
         task.setExecutor(executor);
         task.setTaskStatus(status);
+        List<Label> labels = task.getLabels();
+        if (taskDtoRq.getLabelIds() != null && !taskDtoRq.getLabelIds().isEmpty()) {
+            List<Label> rqLabels = labelRepository.findAllById(taskDtoRq.getLabelIds());
+            for (Label rqLabel: rqLabels) {
+                if (!labels.contains(rqLabel)) {
+                    labels.add(rqLabel);
+                }
+            }
+            labels.removeIf(label -> !rqLabels.contains(label));
+        }
+        task.setLabels(labels);
+
         Task newTask = taskRepository.save(task);
         return taskMapper.toTaskDtoRs(newTask);
     }
 
+    @Override
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }

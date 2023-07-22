@@ -3,7 +3,7 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigs;
 import hexlet.code.app.utils.TestUtils;
-import hexlet.code.dto.StatusDtoRq;
+import hexlet.code.dto.requestDto.StatusDtoRq;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.model.Status;
 import org.junit.jupiter.api.AfterEach;

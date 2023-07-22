@@ -1,7 +1,7 @@
-package hexlet.code.service.mapper;
+package hexlet.code.controller.mapper;
 
-import hexlet.code.dto.UserDtoRq;
-import hexlet.code.dto.UserDtoRs;
+import hexlet.code.dto.requestDto.UserDtoRq;
+import hexlet.code.dto.responseDto.UserDtoRs;
 import hexlet.code.repository.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
